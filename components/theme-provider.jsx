@@ -6,7 +6,7 @@ import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
 function ThemeProvider({
   children,
   ...props
-}: React.ComponentProps<typeof NextThemesProvider>) {
+}) {
   return (
     <NextThemesProvider
       attribute="class"
@@ -21,7 +21,7 @@ function ThemeProvider({
   )
 }
 
-function isTypingTarget(target: EventTarget | null) {
+function isTypingTarget(target) {
   if (!(target instanceof HTMLElement)) {
     return false
   }
@@ -38,7 +38,7 @@ function ThemeHotkey() {
   const { resolvedTheme, setTheme } = useTheme()
 
   React.useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
+    function onKeyDown(event) {
       if (event.defaultPrevented || event.repeat) {
         return
       }
