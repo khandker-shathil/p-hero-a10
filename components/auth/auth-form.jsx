@@ -19,7 +19,7 @@ import { useToast } from "@/components/toast-provider"
 const inputClass =
   "h-11 w-full rounded-lg border bg-background px-3 text-sm outline-none transition-shadow placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50"
 
-export function AuthForm({ register = false }) {
+export function AuthForm({ register = false, returnTo = "/" }) {
   const router = useRouter()
   const notify = useToast()
   const { data: session, isPending } = authClient.useSession()
@@ -28,8 +28,8 @@ export function AuthForm({ register = false }) {
   const [password, setPassword] = useState("")
 
   useEffect(() => {
-    if (session?.user) router.replace("/")
-  }, [session?.user, router])
+    if (session?.user) router.replace(returnTo)
+  }, [session?.user, router, returnTo])
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has("error")) {
@@ -78,13 +78,24 @@ export function AuthForm({ register = false }) {
         )
         return
       }
+      // Confirm the cookie-backed session before entering a protected route.
+      const refreshed = await authClient.getSession({
+        query: { disableCookieCache: true },
+      })
+      if (refreshed.error || !refreshed.data) {
+        notify(
+          "Your sign-in could not be confirmed. Please try logging in again.",
+          "error"
+        )
+        return
+      }
+      authClient.hydrateSession(refreshed.data)
       notify(
         register
           ? "Your account is ready. Welcome to Digital Life Lessons!"
           : "You’re logged in. Welcome back!"
       )
-      router.replace("/")
-      router.refresh()
+      router.replace(returnTo)
     } catch {
       notify("Could not connect. Please try again in a moment.", "error")
     } finally {
@@ -98,10 +109,8 @@ export function AuthForm({ register = false }) {
     try {
       const result = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
-        errorCallbackURL: register
-          ? "/register?error=google"
-          : "/login?error=google",
+        callbackURL: returnTo,
+        errorCallbackURL: `${register ? "/register" : "/login"}?error=google&returnTo=${encodeURIComponent(returnTo)}`,
       })
       if (result.error) {
         notify(
@@ -299,7 +308,7 @@ export function AuthForm({ register = false }) {
         <p className="mt-6 text-center text-sm text-muted-foreground">
           {register ? "Already have an account?" : "New here?"}{" "}
           <Link
-            href={register ? "/login" : "/register"}
+            href={`${register ? "/login" : "/register"}?returnTo=${encodeURIComponent(returnTo)}`}
             className="rounded font-medium text-foreground underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-ring"
           >
             {register ? "Log in" : "Create an account"}

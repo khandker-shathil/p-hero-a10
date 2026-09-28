@@ -1,8 +1,11 @@
+> Backend code and MongoDB tests have moved to `../p-hero-a10-server`.
+> Next.js forwards `/api/*` through `API_SERVER_URL`; credentials live only in the server.
+
 # Homepage data
 
 The homepage reads `GET /api/home`. It uses `MONGODB_URI` and the existing
-`digital-life-lesson` database (`MONGODB_DB_NAME` can override the homepage database).
-Keep this database aligned with the database configured in `lib/auth.js`.
+`digital-life-lesson` database. The server’s `MONGODB_DB_NAME` selects the database for both
+authentication and lesson data.
 
 Future lesson creation and admin features should use this shape:
 
@@ -29,5 +32,4 @@ Empty collections show empty states. Connection/query errors show retry controls
 No example lessons or fabricated community statistics are inserted into MongoDB.
 The hero reflection cards are editorial prompts, not database lessons.
 
-Lesson details, public browsing, author profiles, admin controls, contact/terms
-pages, and branded social account links belong to the remaining application work.
+Admin controls, contact/terms pages, and branded social account links remain future work.
