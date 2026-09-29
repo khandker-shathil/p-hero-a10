@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { LoaderCircle, Plus, BookOpen } from "lucide-react"
+import { LoaderCircle, Plus, BookOpen, Bookmark } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 import { buttonVariants } from "@/components/ui/button"
 
@@ -26,7 +26,10 @@ export function DashboardShell({ children }) {
       </div>
     )
   return (
-    <div key={session.user.id} className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div
+      key={session.user.id}
+      className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+    >
       <nav
         aria-label="Lesson management"
         className="mb-8 flex flex-wrap gap-3 border-b pb-6"
@@ -56,6 +59,19 @@ export function DashboardShell({ children }) {
         >
           <Plus aria-hidden="true" />
           Add Lesson
+        </Link>
+        <Link
+          href="/dashboard/my-favorites"
+          aria-current={
+            pathname === "/dashboard/my-favorites" ? "page" : undefined
+          }
+          className={buttonVariants({
+            variant:
+              pathname === "/dashboard/my-favorites" ? "default" : "outline",
+          })}
+        >
+          <Bookmark aria-hidden="true" />
+          My Favorites
         </Link>
       </nav>
       {children}

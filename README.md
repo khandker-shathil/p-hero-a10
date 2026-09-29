@@ -32,6 +32,7 @@ only in the backend `.env`. Restart Next.js after changing the proxy URL.
 - Protected lesson details with premium/private access enforced by Express.
 - Like toggles, favorites, paginated comments, confirmation-based reports.
 - Public author profiles and their public lessons.
+- My Favorites with category/tone filters, pagination, and save removal.
 - Add Lesson and My Lessons: validated forms, editing, visibility/access controls,
   engagement counts, and confirmed deletion.
 
