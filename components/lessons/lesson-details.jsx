@@ -19,6 +19,8 @@ import {
 import { authClient } from "@/lib/auth-client"
 import { useToast } from "@/components/toast-provider"
 import { Button, buttonVariants } from "@/components/ui/button"
+import { LessonExport } from "@/components/lessons/lesson-export"
+import { LessonShare } from "@/components/lessons/lesson-share"
 import { Avatar } from "@/components/lessons/lesson-card"
 
 const reasons = [
@@ -258,6 +260,7 @@ export function LessonDetails({ id }) {
           <span className="capitalize">{lesson.visibility} lesson</span>
         </div>
       </header>
+      <LessonExport lesson={lesson} />
       <div className="grid gap-10 pt-8 lg:grid-cols-[minmax(0,1fr)_260px]">
         <div className="min-w-0">
           {lesson.image && /^https?:\/\//i.test(lesson.image) && (
@@ -315,6 +318,7 @@ export function LessonDetails({ id }) {
               </span>
             )}
           </div>
+          <LessonShare lesson={lesson} />
           <section className="mt-10" aria-labelledby="comments-heading">
             <h2
               id="comments-heading"

@@ -79,3 +79,13 @@ images target 1 MB and 1920 px. These are compression targets, not guaranteed
 output sizes. The original is retained if smaller, and GIFs are left unchanged.
 The picker previews the prepared image and displays the size reduction. The
 existing 5 MB input limit still applies. No server configuration changes are needed.
+
+Public lesson details include Facebook, X, and LinkedIn sharing through `react-share`,
+plus Copy link with a manual-copy fallback. Private lessons hide sharing controls.
+The footer links to existing discovery, lesson management, and account pages.
+
+Lesson details also offer **Export PDF** below the heading. This opens a clean,
+text-only browser print layout; choose **Save as PDF** as the destination. The
+export includes the title, author, date, category, tone, access labels, and full
+lesson text. Images, navigation, and comments are excluded. Only lessons already
+loaded through the existing access checks can be exported.
