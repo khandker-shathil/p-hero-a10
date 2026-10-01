@@ -63,10 +63,6 @@ export function LessonDetails({ id }) {
 
   useEffect(() => {
     if (isPending) return
-    if (!userId) {
-      router.replace(login)
-      return
-    }
     const controller = new AbortController()
     fetch(endpoint, { signal: controller.signal, cache: "no-store" })
       .then(async (response) => {
@@ -178,7 +174,7 @@ export function LessonDetails({ id }) {
     }
   }
 
-  if (isPending || !userId || !current) return <Status>Loading lesson…</Status>
+  if (isPending || !current) return <Status>Loading lesson…</Status>
   if (current.status !== 200)
     return (
       <section className="mx-auto max-w-xl px-6 py-24 text-center">

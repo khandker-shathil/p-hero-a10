@@ -212,7 +212,7 @@ function NavbarContent({ pathname }) {
                   focusStyle
                 )}
               >
-                <Avatar user={user} />
+                <Avatar key={user.image || user.name} user={user} />
                 <ChevronDown
                   className="hidden size-3.5 text-muted-foreground sm:block"
                   aria-hidden="true"

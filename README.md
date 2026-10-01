@@ -29,14 +29,22 @@ only in the backend `.env`. Restart Next.js after changing the proxy URL.
 - Responsive navigation, light/dark theme, custom 404, toast feedback.
 - Landing-page carousel, Motion animation, database-backed community sections.
 - Public lessons: keyword/category/tone filters, sorting and pagination.
-- Protected lesson details with premium/private access enforced by Express.
+- Free public lesson details and comments are readable without login; premium/private
+  access and authenticated engagement are enforced by Express.
 - Like toggles, favorites, paginated comments, confirmation-based reports.
 - Public author profiles and their public lessons.
 - My Favorites with category/tone filters, pagination, and save removal.
+- My Profile: display name/photo editing, read-only email, membership badge,
+  lesson/favorite counts, and paginated public lessons.
 - Add Lesson and My Lessons: validated forms, editing, visibility/access controls,
   engagement counts, and confirmed deletion.
 
-Dashboard analytics, admin moderation, Stripe upgrade/payment pages, and final
+- Pricing page at `/pricing`: Free/Premium comparison, account-aware upgrade
+  summary, and FAQs. Pricing is pending and checkout is disabled; no payment
+  details are collected and no membership changes are made. Stripe checkout and
+  verified webhook fulfillment still need backend implementation.
+
+Dashboard analytics, admin moderation, Stripe payment integration, and final
 contact/terms/social configuration remain separate implementation work.
 
 ## Verify
@@ -51,3 +59,23 @@ Backend authorization and MongoDB tests live in the server repository.
 
 Next.js, React, Tailwind CSS, shadcn/ui/Base UI, Better Auth (client), Motion,
 lucide-react, next-themes.
+
+### Image uploads
+
+Registration, profile editing, and lesson creation/editing accept JPEG, PNG, WebP,
+or GIF files up to 5 MB. The browser sends the file to the authenticated Express
+`POST /api/images` endpoint, which uploads it to ImgBB. Only the resulting URL is
+saved with the user or lesson in MongoDB. Existing images stay until replaced or
+removed. Removing an image removes its reference from the app, not from ImgBB.
+
+Set `IMGBB_API_KEY` in the **server project's `.env`**, then restart Express. Keep
+this key server-only; do not prefix it with `NEXT_PUBLIC_`. Registration creates
+the account before uploading its optional photo. If that upload fails, the
+account still exists and the user can retry from My Profile.
+
+Before upload, `browser-image-compression` prepares a WebP version in the browser:
+profile/registration photos target 200 KB and 512 px on the longest edge; lesson
+images target 1 MB and 1920 px. These are compression targets, not guaranteed
+output sizes. The original is retained if smaller, and GIFs are left unchanged.
+The picker previews the prepared image and displays the size reduction. The
+existing 5 MB input limit still applies. No server configuration changes are needed.

@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { LoaderCircle, Plus, BookOpen, Bookmark } from "lucide-react"
+import { LoaderCircle, Plus, BookOpen, Bookmark, UserRound } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 import { buttonVariants } from "@/components/ui/button"
 
@@ -72,6 +72,16 @@ export function DashboardShell({ children }) {
         >
           <Bookmark aria-hidden="true" />
           My Favorites
+        </Link>
+        <Link
+          href="/dashboard/profile"
+          aria-current={pathname === "/dashboard/profile" ? "page" : undefined}
+          className={buttonVariants({
+            variant: pathname === "/dashboard/profile" ? "default" : "outline",
+          })}
+        >
+          <UserRound aria-hidden="true" />
+          Profile
         </Link>
       </nav>
       {children}

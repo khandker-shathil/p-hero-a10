@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { LoaderCircle } from "lucide-react"
+import { ImagePicker } from "@/components/image-picker"
+import { uploadImage } from "@/lib/image-upload"
 import { authClient } from "@/lib/auth-client"
 import { CATEGORIES, TONES } from "@/lib/lesson-filters"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -63,9 +65,12 @@ export function LessonForm({ id }) {
     }
     const fields = new FormData(form)
     const body = Object.fromEntries(fields)
+    const imageFile = fields.get("imageFile")
+    delete body.imageFile
     body.accessLevel = fields.get("accessLevel") || lesson.accessLevel
     setBusy(true)
     try {
+      if (imageFile?.size) body.image = await uploadImage(imageFile, "lesson")
       const response = await fetch(endpoint, {
         method: id ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
@@ -190,20 +195,11 @@ export function LessonForm({ id }) {
               </select>
             </label>
           </div>
-          <label className="block text-sm font-medium">
-            Image URL (optional)
-            <input
-              name="image"
-              type="url"
-              maxLength={2048}
-              defaultValue={lesson.image || ""}
-              placeholder="https://example.com/your-image.jpg"
-              className={input}
-            />
-            <span className="mt-2 block text-xs font-normal text-muted-foreground">
-              Use a public http or https image link.
-            </span>
-          </label>
+          <ImagePicker
+            kind="lesson"
+            currentImage={lesson.image || ""}
+            label="Lesson image (optional)"
+          />
           <div className="grid gap-6 sm:grid-cols-2">
             <label className="block text-sm font-medium">
               Visibility

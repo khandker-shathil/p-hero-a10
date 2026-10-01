@@ -11,6 +11,8 @@ import {
   EyeOff,
   LoaderCircle,
 } from "lucide-react"
+import { ImagePicker } from "@/components/image-picker"
+import { uploadImage } from "@/lib/image-upload"
 import { authClient } from "@/lib/auth-client"
 import { passwordError } from "@/lib/auth-validation"
 import { Button } from "@/components/ui/button"
@@ -28,8 +30,8 @@ export function AuthForm({ register = false, returnTo = "/" }) {
   const [password, setPassword] = useState("")
 
   useEffect(() => {
-    if (session?.user) router.replace(returnTo)
-  }, [session?.user, router, returnTo])
+    if (session?.user && !busy) router.replace(returnTo)
+  }, [session?.user, router, returnTo, busy])
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has("error")) {
@@ -53,13 +55,11 @@ export function AuthForm({ register = false, returnTo = "/" }) {
     const fields = new FormData(form)
     const email = fields.get("email").trim()
     const name = fields.get("name")?.trim()
-    const image = fields.get("image")?.trim()
+    const imageFile = fields.get("imageFile")
     if (register) {
       if (!name) return notify("Please enter your name.", "error")
       const error = passwordError(password)
       if (error) return notify(error, "error")
-      if (image && !/^https?:\/\//i.test(image))
-        return notify("Photo URL must start with https:// or http://.", "error")
     }
     setBusy("email")
     try {
@@ -68,7 +68,6 @@ export function AuthForm({ register = false, returnTo = "/" }) {
             name,
             email,
             password,
-            ...(image ? { image } : {}),
           })
         : await authClient.signIn.email({ email, password })
       if (result.error) {
@@ -77,6 +76,18 @@ export function AuthForm({ register = false, returnTo = "/" }) {
           "error"
         )
         return
+      }
+      if (register && imageFile?.size) {
+        try {
+          const image = await uploadImage(imageFile)
+          const updated = await authClient.updateUser({ image })
+          if (updated.error) throw new Error(updated.error.message)
+        } catch (error) {
+          notify(
+            `Account created, but your photo wasn’t saved: ${error.message} You can retry from your profile.`,
+            "error"
+          )
+        }
       }
       // Confirm the cookie-backed session before entering a protected route.
       const refreshed = await authClient.getSession({
@@ -133,7 +144,11 @@ export function AuthForm({ register = false, returnTo = "/" }) {
         className="flex min-h-[60vh] items-center justify-center gap-3 text-sm text-muted-foreground"
       >
         <LoaderCircle className="size-5 animate-spin" aria-hidden="true" />
-        {isPending ? "Loading…" : "Redirecting…"}
+        {busy === "email" && register
+          ? "Finishing your account…"
+          : isPending
+            ? "Loading…"
+            : "Redirecting…"}
       </div>
     )
 
@@ -231,18 +246,7 @@ export function AuthForm({ register = false, returnTo = "/" }) {
                 className={inputClass}
               />
             </Field>
-            {register && (
-              <Field label="Photo URL (optional)" id="image">
-                <input
-                  id="image"
-                  name="image"
-                  type="url"
-                  autoComplete="url"
-                  placeholder="https://example.com/your-photo.jpg"
-                  className={inputClass}
-                />
-              </Field>
-            )}
+            {register && <ImagePicker />}
             <Field label="Password" id="password">
               <div className="relative">
                 <input
