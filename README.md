@@ -98,11 +98,26 @@ Log out and back in after changing the role. Admin logins with no specific retur
 page go to `/dashboard/admin`; the account menu and dashboard navigation also
 link there. Registration cannot assign an admin role.
 
-The admin workspace includes overview counts, paginated lesson/user/report lists,
-public lesson featuring, lesson review/edit links, confirmed lesson deletion,
-and confirmed report dismissal. The user list is read-only; role changes are not
-exposed in the UI. Deleted lessons also have their comments, favorites, and
-reports removed. Dismissing a report keeps the lesson.
+The admin workspace has five routes:
+
+- `/dashboard/admin`: total users, public lessons, distinct flagged lessons,
+  today's new lessons, the five most active contributors, and daily lesson/user
+  growth charts. Rankings and charts cover the last 30 days; dates use UTC.
+- `/dashboard/admin/manage-users`: paginated name/email/role/lesson-count table,
+  with confirmed promotion to admin. Demotion and account deletion are not exposed.
+- `/dashboard/admin/manage-lessons`: all lessons, category/visibility/report
+  filters, public/private/flagged totals, featuring, reviewed status, and confirmed
+  deletion. Featured lessons appear in the existing homepage section.
+- `/dashboard/admin/reported-lessons`: one row per reported lesson, report counts,
+  and a paginated modal of reasons and reporter names/emails. Ignore clears every
+  report for the selected lesson; Delete removes the lesson and related comments,
+  favorites, and reports. Deleted lessons are excluded from flagged counts.
+- `/dashboard/admin/profile`: the existing display-name and ImgBB photo editor,
+  account email, and admin role badge.
+
+Profile editing cannot change roles. Admin role promotion uses a separate,
+admin-protected endpoint. Optional account deletion and moderation activity
+summaries are not implemented.
 
 `/api/admin/*` checks both the session and the current MongoDB role on every
 request. Redeploy/restart the frontend and Express server together. Server tests:

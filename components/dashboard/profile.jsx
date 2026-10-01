@@ -14,7 +14,7 @@ import { useToast } from "@/components/toast-provider"
 const inputClass =
   "mt-2 w-full rounded-lg border bg-background px-3 py-2.5 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:bg-muted disabled:text-muted-foreground"
 
-export function Profile() {
+export function Profile({ admin = false }) {
   const router = useRouter()
   const notify = useToast()
   const [page, setPage] = useState(1)
@@ -124,7 +124,9 @@ export function Profile() {
   const { user, stats, publicLessons } = result
   return (
     <section>
-      <h1 className="text-3xl font-semibold tracking-tight">My Profile</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">
+        {admin ? "Admin Profile" : "My Profile"}
+      </h1>
       <p className="mt-3 mb-8 text-sm text-muted-foreground">
         A little about you, and the wisdom you’ve shared along the way.
       </p>

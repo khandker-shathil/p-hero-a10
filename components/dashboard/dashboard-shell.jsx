@@ -25,6 +25,18 @@ export function DashboardShell({ children }) {
         Loading your workspace…
       </div>
     )
+  if (
+    pathname === "/dashboard/admin" ||
+    pathname.startsWith("/dashboard/admin/")
+  )
+    return (
+      <div
+        key={session.user.id}
+        className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+      >
+        {children}
+      </div>
+    )
   return (
     <div
       key={session.user.id}
