@@ -30,7 +30,12 @@ export function AuthForm({ register = false, returnTo = "/" }) {
   const [password, setPassword] = useState("")
 
   useEffect(() => {
-    if (session?.user && !busy) router.replace(returnTo)
+    if (session?.user && !busy)
+      router.replace(
+        returnTo === "/" && session.user.role === "admin"
+          ? "/dashboard/admin"
+          : returnTo
+      )
   }, [session?.user, router, returnTo, busy])
 
   useEffect(() => {
@@ -106,7 +111,11 @@ export function AuthForm({ register = false, returnTo = "/" }) {
           ? "Your account is ready. Welcome to Digital Life Lessons!"
           : "You’re logged in. Welcome back!"
       )
-      router.replace(returnTo)
+      router.replace(
+        returnTo === "/" && refreshed.data.user.role === "admin"
+          ? "/dashboard/admin"
+          : returnTo
+      )
     } catch {
       notify("Could not connect. Please try again in a moment.", "error")
     } finally {
@@ -120,7 +129,7 @@ export function AuthForm({ register = false, returnTo = "/" }) {
     try {
       const result = await authClient.signIn.social({
         provider: "google",
-        callbackURL: returnTo,
+        callbackURL: `/login?returnTo=${encodeURIComponent(returnTo)}`,
         errorCallbackURL: `${register ? "/register" : "/login"}?error=google&returnTo=${encodeURIComponent(returnTo)}`,
       })
       if (result.error) {

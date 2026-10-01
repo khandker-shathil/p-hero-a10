@@ -83,6 +83,17 @@ export function DashboardShell({ children }) {
           <UserRound aria-hidden="true" />
           Profile
         </Link>
+        {session.user.role === "admin" && (
+          <Link
+            href="/dashboard/admin"
+            aria-current={pathname === "/dashboard/admin" ? "page" : undefined}
+            className={buttonVariants({
+              variant: pathname === "/dashboard/admin" ? "default" : "outline",
+            })}
+          >
+            Admin Dashboard
+          </Link>
+        )}
       </nav>
       {children}
     </div>

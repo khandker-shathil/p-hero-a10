@@ -236,14 +236,18 @@ function NavbarContent({ pathname }) {
                   Profile
                 </Link>
                 <Link
-                  href="/dashboard"
+                  href={
+                    user.role === "admin"
+                      ? "/dashboard/admin"
+                      : "/dashboard/my-lessons"
+                  }
                   className={cn(
                     "flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm hover:bg-accent",
                     focusStyle
                   )}
                 >
                   <LayoutDashboard className="size-4" aria-hidden="true" />
-                  Dashboard
+                  {user.role === "admin" ? "Admin Dashboard" : "Dashboard"}
                 </Link>
                 {user.isPremium ? (
                   <p className="flex items-center gap-2 px-3 py-2.5 text-sm">

@@ -44,7 +44,7 @@ only in the backend `.env`. Restart Next.js after changing the proxy URL.
   details are collected and no membership changes are made. Stripe checkout and
   verified webhook fulfillment still need backend implementation.
 
-Dashboard analytics, admin moderation, Stripe payment integration, and final
+Personal dashboard analytics, Stripe payment integration, and final
 contact/terms/social configuration remain separate implementation work.
 
 ## Verify
@@ -89,3 +89,21 @@ text-only browser print layout; choose **Save as PDF** as the destination. The
 export includes the title, author, date, category, tone, access labels, and full
 lesson text. Images, navigation, and comments are excluded. Only lessons already
 loaded through the existing access checks can be exported.
+
+
+### Admin dashboard
+
+Use the existing login with an account whose MongoDB `user.role` is `admin`.
+Log out and back in after changing the role. Admin logins with no specific return
+page go to `/dashboard/admin`; the account menu and dashboard navigation also
+link there. Registration cannot assign an admin role.
+
+The admin workspace includes overview counts, paginated lesson/user/report lists,
+public lesson featuring, lesson review/edit links, confirmed lesson deletion,
+and confirmed report dismissal. The user list is read-only; role changes are not
+exposed in the UI. Deleted lessons also have their comments, favorites, and
+reports removed. Dismissing a report keeps the lesson.
+
+`/api/admin/*` checks both the session and the current MongoDB role on every
+request. Redeploy/restart the frontend and Express server together. Server tests:
+`node --test tests/admin.test.mjs tests/profile.test.mjs`.
