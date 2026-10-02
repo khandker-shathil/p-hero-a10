@@ -100,7 +100,10 @@ export function Pricing() {
             Unlock more of the community’s wisdom.
           </p>
           <p className="mt-7 text-3xl font-semibold">
-            {premium ? "You’re Premium" : "Pricing coming soon"}
+            $5.99{" "}
+            <span className="text-sm font-normal text-muted-foreground">
+              USD · subscription
+            </span>
           </p>
           <Features items={premiumFeatures} />
           {isPending ? (
@@ -125,7 +128,7 @@ export function Pricing() {
           <p className="mt-3 text-center text-xs text-muted-foreground">
             {premium
               ? "Your premium access is active."
-              : "Payments are not available yet."}
+              : "Continue to Stripe to subscribe."}
           </p>
         </article>
       </div>
@@ -146,11 +149,12 @@ export function Pricing() {
                 Your upgrade
               </h2>
               <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                Checkout will be available here soon. You’ll see the final price
-                and billing details before making a payment.
+                Subscribe to Premium for $5.99 USD. Review your billing schedule
+                and payment details on Stripe before confirming.
               </p>
               <p className="mt-4 text-sm text-muted-foreground">
-                You can keep using your free account in the meantime.
+                Your subscription unlocks premium public lessons and lets you
+                create lessons with premium access.
               </p>
             </div>
             <div className="rounded-xl border bg-card p-5">
@@ -158,25 +162,34 @@ export function Pricing() {
                 <span className="flex items-center gap-2 font-medium">
                   <Crown className="size-4" aria-hidden="true" /> Premium access
                 </span>
-                <span>Coming soon</span>
+                <span>$5.99 USD</span>
               </div>
               <p className="mt-4 text-sm break-all text-muted-foreground">
                 {session?.user
                   ? `Account: ${session.user.email}`
-                  : "Sign in to use your account when checkout becomes available."}
+                  : "Sign in to subscribe with your account."}
               </p>
-              <Button
-                disabled
-                className="mt-5 w-full"
-                aria-describedby="payment-status"
+              <form
+                action="/api/checkout_sessions"
+                method="POST"
+                className="mt-5"
               >
-                Continue to payment
-              </Button>
+                <section aria-label="Stripe checkout">
+                  <Button
+                    type="submit"
+                    disabled={isPending || !session?.user}
+                    className="w-full"
+                    aria-describedby="payment-status"
+                  >
+                    {isPending ? "Loading your account…" : "Checkout"}
+                  </Button>
+                </section>
+              </form>
               <p
                 id="payment-status"
                 className="mt-3 text-center text-xs text-muted-foreground"
               >
-                Payments are not open yet. No charge will be made.
+                Continue to Stripe to review and confirm your subscription.
               </p>
               {!isPending && !session && (
                 <Link
@@ -203,8 +216,8 @@ export function Pricing() {
             "No. Private lessons stay private. Premium gives you access to premium lessons that their authors have shared publicly.",
           ],
           [
-            "Can I pay right now?",
-            "Not yet. Checkout is coming soon, and the price and billing terms will be shown before payments open.",
+            "How do I subscribe?",
+            "Sign in, then select Checkout. You’ll continue to Stripe to review the $5.99 USD subscription and its billing schedule before confirming payment.",
           ],
         ].map(([question, answer]) => (
           <details key={question} className="border-b py-5">
