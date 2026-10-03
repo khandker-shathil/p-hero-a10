@@ -1,183 +1,229 @@
-# Digital Life Lessons — Client
+# Digital Life Lessons
 
-A Next.js JavaScript frontend for preserving and sharing personal wisdom.
-Live URL: not deployed yet.
+A full-stack platform for preserving personal wisdom, sharing meaningful experiences, and learning from a community. Users can write public or private lessons, save favorites, and unlock premium content through a Stripe subscription.
+
+## Project links
+
+Replace the placeholders below before submission.
+
+| Link | URL |
+| --- | --- |
+| Live website | https://p-hero-a10.vercel.app/ |
+| Live Express API | https://p-hero-a10-server.vercel.app/ |
+| Client repository | https://github.com/khandker-shathil/p-hero-a10 |
+| Server repository | https://github.com/khandker-shathil/p-hero-a10-server |
+
+## Screenshots
+
+Save screenshots in [`docs/screenshots/`](docs/screenshots/). Use the filenames below, then uncomment the matching Markdown image lines in this README. Instructions are in [the screenshot guide](docs/screenshots/README.md).
+
+<!-- Add each image file before uncommenting its line. -->
+![Digital Life Lessons homepage](docs/screenshots/home.png)
+![Public lesson browsing and filters](docs/screenshots/public-lessons.png)
+![Lesson details and sharing](docs/screenshots/lesson-details.png)
+![User dashboard](docs/screenshots/user-dashboard.png)
+![Free and Premium comparison](docs/screenshots/pricing.png)
+![Admin dashboard analytics](docs/screenshots/admin-dashboard.png)
+<!-- ![Mobile layout](docs/screenshots/mobile.png) -->
+
+## Key features
+
+- **Authentication:** Better Auth email/password and Google login, protected dashboards, and role-based admin access.
+- **Homepage:** three-slide hero, Motion animation, admin-selected featured lessons, weekly contributors, and most-saved lessons.
+- **Discover lessons:** keyword search, category and emotional-tone filters, newest/most-saved sorting, and pagination.
+- **Create and manage:** lesson creation, editing, deletion, public/private visibility, and Free/Premium access levels.
+- **Engagement:** likes, favorites, comments, and lesson reports.
+- **User dashboard:** personal lesson/favorite counts, five recent lessons, quick shortcuts, and a 30-day contribution chart.
+- **Profiles:** display-name and photo updates, role and Premium badges, and public lesson history.
+- **Premium:** $5.99 USD subscription checkout through Stripe, payment confirmation, checkout cancellation page, and verified MongoDB activation.
+- **Admin tools:** platform analytics, user promotion, lesson filtering, featured/reviewed controls, and grouped report moderation.
+- **Image uploads:** ImgBB hosting with browser compression and before/after file-size feedback.
+- **Sharing:** Facebook, X, and LinkedIn through `react-share`, plus Copy link.
+- **PDF export:** a clean lesson print layout with the browser’s **Save as PDF** option.
+- **Interface:** light/dark theme, responsive layouts, toast feedback, loading states, and a custom 404 page.
+
+## Technology and npm packages
+
+| Area | Technologies/packages |
+| --- | --- |
+| Frontend | Next.js, React, JavaScript |
+| Styling and UI | Tailwind CSS, shadcn/ui, `@base-ui/react`, `lucide-react`, `class-variance-authority` |
+| Animation and theme | `motion`, `next-themes` |
+| Authentication | `better-auth`, MongoDB adapter |
+| Payments | `stripe`; `@stripe/stripe-js` is also installed |
+| Image compression | `browser-image-compression` |
+| Social sharing | `react-share` |
+| Backend | Express, MongoDB driver, `cors`, `dotenv` |
+| Development | ESLint, Prettier, Node.js test runner |
 
 ## Architecture
 
-The standalone Express backend lives in `../p-hero-a10-server` and owns Better
-Auth, MongoDB, and the business APIs. Next.js forwards `/api/*` to Express, except
-for the local `/api/checkout_sessions` route that creates Stripe Checkout sessions.
-The success page verifies checkout on the server; Express owns Premium activation
-and Stripe webhooks. The proxy keeps browser cookies same-origin.
+This repository contains the Next.js application. The separate Express project is expected at `../p-hero-a10-server` during local development.
 
-## Start locally
+- Express owns Better Auth, MongoDB, lesson APIs, admin APIs, image uploads, Premium activation, and Stripe webhooks.
+- Next.js forwards `/api/*` requests to Express, except the local `/api/checkout_sessions` route, which creates Stripe Checkout sessions.
+- The payment success page verifies checkout server-side and asks Express to activate the authenticated account.
+- The API proxy keeps browser authentication cookies on the frontend origin.
+- MongoDB’s Better Auth account collection is named `user`; application collections include `lessons`, `favorites`, `comments`, and `lessonsReports`.
 
-Use Node 24 (`nvm use`) in both folders.
+## Run locally
 
-1. In `../p-hero-a10-server`: configure its `.env`, then run `npm run dev`.
-2. Here: copy `.env.example` to `.env`, then run `npm run dev`.
-3. Open `http://localhost:3000`.
+Use **Node.js 24**. Clone both repositories into sibling folders named `p-hero-a10` and `p-hero-a10-server`, or adjust the paths below.
 
-The server uses port **5005** because macOS may reserve port 5000.
-`API_SERVER_URL` defaults to `http://localhost:5005`. Set the deployed server URL
-before building the frontend. Keep MongoDB, Better Auth, and Google OAuth secrets
-only in the backend `.env`. Restart Next.js after changing the proxy URL.
+1. Create a `.env` file in each project using the configuration examples below. Keep actual secrets out of Git.
+2. Start Express in one terminal:
 
-## Implemented features
+   ```bash
+   cd ../p-hero-a10-server
+   nvm use
+   npm ci
+   npm run dev
+   ```
 
-- Email/password and Google authentication with Better Auth.
-- Responsive navigation, light/dark theme, custom 404, toast feedback.
-- Landing-page carousel, Motion animation, database-backed community sections.
-- Public lessons: keyword/category/tone filters, sorting and pagination.
-- Free public lesson details and comments are readable without login; premium/private
-  access and authenticated engagement are enforced by Express.
-- Like toggles, favorites, paginated comments, confirmation-based reports.
-- Public author profiles and their public lessons.
-- My Favorites with category/tone filters, pagination, and save removal.
-- My Profile: display name/photo editing, read-only email, membership badge,
-  lesson/favorite counts, and paginated public lessons.
-- Add Lesson and My Lessons: validated forms, editing, visibility/access controls,
-  engagement counts, and confirmed deletion.
+3. Start Next.js in another terminal:
 
-- Pricing page at `/pricing`: Free/Premium comparison, account-aware upgrade
-  summary, and FAQs. Authenticated Stripe subscription checkout activates Premium
-  through server-verified payment and account ownership checks. Configure Stripe
-  webhooks in deployment to synchronize subscription lifecycle changes.
+   ```bash
+   cd p-hero-a10
+   nvm use
+   npm ci
+   npm run dev
+   ```
 
-Final contact/terms/social configuration remains separate implementation work.
+4. Open `http://localhost:3000`. The API normally runs on `http://localhost:5005`.
 
-## Verify
+If you are already inside the client folder, omit `cd p-hero-a10` in step 3. Restart the relevant process after changing its environment variables.
 
-- `npm run lint`
-- `node --test tests/*.test.mjs`
-- `npm run build -- --webpack`
+## Environment variables — add your values here
 
-Backend authorization and MongoDB tests live in the server repository.
+The following are templates, not working credentials. Replace each `YOUR_...` value in your local `.env` or deployment environment settings. Never paste real secret values into this README.
 
-## Main packages
+### Next.js project: `.env`
 
-Next.js, React, Tailwind CSS, shadcn/ui/Base UI, Better Auth (client), Motion,
-lucide-react, next-themes.
+```dotenv
+API_SERVER_URL=http://localhost:5005
+BILLING_SECRET_KEY=YOUR_STRIPE_SECRET_KEY
+STRIPE_PRICE_ID=YOUR_RECURRING_STRIPE_PRICE_ID
+NEXT_PUBLIC_BILLING_PUBLISHABLE_KEY=YOUR_STRIPE_PUBLISHABLE_KEY
+```
 
-### Image uploads
+- `API_SERVER_URL`: the Express origin, without `/api` at the end.
+- `BILLING_SECRET_KEY`: server-only Stripe secret for creating and verifying checkout sessions. Never give this variable a `NEXT_PUBLIC_` prefix.
+- `STRIPE_PRICE_ID`: the recurring Premium Price configured in Stripe. The checkout amount and billing interval come from this Price; keep it consistent with the pricing page.
+- `NEXT_PUBLIC_BILLING_PUBLISHABLE_KEY`: public Stripe key. The current redirect-based checkout does not require it, but it is available for browser Stripe SDK use.
 
-Registration, profile editing, and lesson creation/editing accept JPEG, PNG, WebP,
-or GIF files up to 5 MB. The browser sends the file to the authenticated Express
-`POST /api/images` endpoint, which uploads it to ImgBB. Only the resulting URL is
-saved with the user or lesson in MongoDB. Existing images stay until replaced or
-removed. Removing an image removes its reference from the app, not from ImgBB.
+### Express project: `.env`
 
-Set `IMGBB_API_KEY` in the **server project's `.env`**, then restart Express. Keep
-this key server-only; do not prefix it with `NEXT_PUBLIC_`. Registration creates
-the account before uploading its optional photo. If that upload fails, the
-account still exists and the user can retry from My Profile.
+```dotenv
+PORT=5005
+CLIENT_URL=http://localhost:3000
+BETTER_AUTH_URL=http://localhost:3000
+BETTER_AUTH_SECRET=YOUR_LONG_RANDOM_AUTH_SECRET
+MONGODB_URI=YOUR_MONGODB_CONNECTION_STRING
+MONGODB_DB_NAME=digital-life-lesson
+GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_SECRET=YOUR_GOOGLE_CLIENT_SECRET
+IMGBB_API_KEY=YOUR_IMGBB_API_KEY
+BILLING_SECRET_KEY=YOUR_STRIPE_SECRET_KEY
+STRIPE_PRICE_ID=YOUR_RECURRING_STRIPE_PRICE_ID
+STRIPE_WEBHOOK_SECRET=YOUR_STRIPE_WEBHOOK_SIGNING_SECRET
+```
 
-Before upload, `browser-image-compression` prepares a WebP version in the browser:
-profile/registration photos target 200 KB and 512 px on the longest edge; lesson
-images target 1 MB and 1920 px. These are compression targets, not guaranteed
-output sizes. The original is retained if smaller, and GIFs are left unchanged.
-The picker previews the prepared image and displays the size reduction. The
-existing 5 MB input limit still applies. No server configuration changes are needed.
+- `CLIENT_URL`: the frontend origin, including `http://` or `https://`.
+- `BETTER_AUTH_URL`: the frontend origin in this project’s same-origin API proxy setup.
+- `MONGODB_DB_NAME`: change this value to use a custom database name.
+- Google credentials enable Google sign-in. Configure the callback URL as `YOUR_FRONTEND_URL/api/auth/callback/google` in Google’s OAuth settings.
+- `IMGBB_API_KEY`: stays on Express; MongoDB stores image URLs, not uploaded image files.
+- Both projects must use Stripe secret keys for the same account/mode and the same `STRIPE_PRICE_ID`.
+- `STRIPE_WEBHOOK_SECRET`: the signing secret for your configured webhook endpoint, not the Stripe API secret.
 
-Public lesson details include Facebook, X, and LinkedIn sharing through `react-share`,
-plus Copy link with a manual-copy fallback. Private lessons hide sharing controls.
-The footer links to existing discovery, lesson management, and account pages.
+## Stripe setup and payment flow
 
-Lesson details also offer **Export PDF** below the heading. This opens a clean,
-text-only browser print layout; choose **Save as PDF** as the destination. The
-export includes the title, author, date, category, tone, access labels, and full
-lesson text. Images, navigation, and comments are excluded. Only lessons already
-loaded through the existing access checks can be exported.
+1. Create a recurring **$5.99 USD** Price in Stripe test mode and add its ID as `STRIPE_PRICE_ID` in both projects.
+2. Add `BILLING_SECRET_KEY` to both projects.
+3. Create a Stripe webhook endpoint targeting `YOUR_LIVE_SERVER_URL/api/stripe/webhook`.
+4. Subscribe to these events:
+   - `checkout.session.completed`
+   - `checkout.session.async_payment_succeeded`
+   - `customer.subscription.updated`
+   - `customer.subscription.deleted`
+5. Add that endpoint’s signing secret to Express as `STRIPE_WEBHOOK_SECRET`.
+6. Restart/redeploy both projects, then verify the flow using Stripe test mode.
 
+Checkout attaches the authenticated user ID to the session and subscription. Express verifies account ownership, payment completion, the Premium Price, and subscription status before setting `user.isPremium` to `true`. It also stores the Stripe customer/subscription IDs and subscription status. The browser refreshes its session after activation.
 
-### Admin dashboard
+Subscription webhooks synchronize access with Stripe’s current status. Canceling at period end retains access while the subscription remains active. Returning from checkout without completing it leads to `/payment/cancel`; this does not cancel an existing subscription.
 
-Use the existing login with an account whose MongoDB `user.role` is `admin`.
-Log out and back in after changing the role. Admin logins with no specific return
-page go to `/dashboard/admin`; the account menu and dashboard navigation also
-link there. Registration cannot assign an admin role.
+Older checkouts created without user metadata require manual account matching after payment verification. Do not pay again just to link an older checkout.
 
-The admin workspace has five routes:
+## Main routes
 
-- `/dashboard/admin`: total users, public lessons, distinct flagged lessons,
-  today's new lessons, the five most active contributors, and daily lesson/user
-  growth charts. Rankings and charts cover the last 30 days; dates use UTC.
-- `/dashboard/admin/manage-users`: paginated name/email/role/lesson-count table,
-  with confirmed promotion to admin. Demotion and account deletion are not exposed.
-- `/dashboard/admin/manage-lessons`: all lessons, category/visibility/report
-  filters, public/private/flagged totals, featuring, reviewed status, and confirmed
-  deletion. Featured lessons appear in the existing homepage section.
-- `/dashboard/admin/reported-lessons`: one row per reported lesson, report counts,
-  and a paginated modal of reasons and reporter names/emails. Ignore clears every
-  report for the selected lesson; Delete removes the lesson and related comments,
-  favorites, and reports. Deleted lessons are excluded from flagged counts.
-- `/dashboard/admin/profile`: the existing display-name and ImgBB photo editor,
-  account email, and admin role badge.
+| Route | Purpose |
+| --- | --- |
+| `/` | Homepage |
+| `/login`, `/register` | Authentication |
+| `/public-lessons` | Public lesson browsing |
+| `/lessons/[id]` | Lesson details; free public lessons allow guest reading |
+| `/authors/[id]` | Public author profile |
+| `/pricing` | Plan comparison and authenticated checkout |
+| `/pricing/success` | Verified checkout confirmation and Premium activation |
+| `/payment/cancel` | Checkout cancellation page |
+| `/dashboard` | Protected user overview |
+| `/dashboard/add-lesson` | Create a lesson |
+| `/dashboard/my-lessons` | Manage owned lessons |
+| `/dashboard/update-lesson/[id]` | Edit a lesson |
+| `/dashboard/my-favorites` | Saved lessons |
+| `/dashboard/profile` | Profile settings and public lesson history |
+| `/dashboard/admin` | Admin analytics |
+| `/dashboard/admin/manage-users` | User table and promotion |
+| `/dashboard/admin/manage-lessons` | Lesson moderation and filters |
+| `/dashboard/admin/reported-lessons` | Report reasons, reporters, Delete/Ignore actions |
+| `/dashboard/admin/profile` | Admin profile settings |
 
-Profile editing cannot change roles. Admin role promotion uses a separate,
-admin-protected endpoint. Optional account deletion and moderation activity
-summaries are not implemented.
+Private APIs verify Better Auth sessions. Admin APIs additionally check the current MongoDB role. Lesson ownership and access rules are enforced by Express.
 
-`/api/admin/*` checks both the session and the current MongoDB role on every
-request. Redeploy/restart the frontend and Express server together. Server tests:
-`node --test tests/admin.test.mjs tests/profile.test.mjs`.
+## Image uploads and PDF export
 
+- Upload JPEG, PNG, WebP, or GIF files up to **5 MB**.
+- Profile photos target **200 KB / 512 px**; lesson images target **1 MB / 1920 px** before upload. These are compression targets, not guaranteed sizes.
+- GIFs are preserved. The original file is kept if compression would make it larger.
+- Removing an image removes its app reference, not the file from ImgBB.
+- **Export PDF** opens a text-only print layout. Select **Save as PDF**. The export includes title, author, date, categories, access labels, and full lesson text; images and comments are excluded.
 
-### Stripe Premium activation
+## Checks
 
-Checkout requires login and attaches the authenticated user ID to the Stripe
-Checkout Session and subscription metadata. The success page posts the checkout
-ID to `/api/billing/activate`. Express retrieves the session and subscription from
-Stripe, verifies ownership, the configured Premium Price, completed payment, and
-an active/trialing subscription, then updates the MongoDB `user` document:
-`isPremium`, `stripeCustomerId`, `stripeSubscriptionId`, `stripeSubscriptionStatus`,
-and `updatedAt`. The browser refreshes its Better Auth session after activation.
-Existing Premium lesson access, creation, and badges use `isPremium`.
+Run in the client project:
 
-Configure `BILLING_SECRET_KEY` in both projects' deployment environments. Optional
-`STRIPE_PRICE_ID` must be the same recurring Price in both projects; otherwise the
-existing configured Price ID is used. The local secret was copied to the Express
-`.env` without removing it from the Next.js environment.
+```bash
+npm run lint
+node --experimental-test-module-mocks --test tests/*.test.mjs
+npm run build -- --webpack
+```
 
-In Stripe, add a webhook endpoint at
-`https://YOUR-EXPRESS-SERVER/api/stripe/webhook` and subscribe to:
+Run in the server project:
 
-- `checkout.session.completed`
-- `checkout.session.async_payment_succeeded`
-- `customer.subscription.updated`
-- `customer.subscription.deleted`
+```bash
+npm test
+```
 
-Set that endpoint's signing secret as `STRIPE_WEBHOOK_SECRET` on Express, then
-restart/redeploy both projects. Webhooks verify the signature against the raw
-request body before touching MongoDB. Checkout events activate access even when
-the browser never returns; subscription events refresh access from Stripe's
-current status. Cancellation at period end keeps access while the subscription
-is still active. Canceled, unpaid, past-due, and paused statuses revoke access.
+Some MongoDB aggregation tests are opt-in. The default tests mock payment/database writes; they do not replace a real browser checkout test.
 
-Checkouts created before user metadata was added cannot be automatically matched.
-An administrator must match the existing verified payment to its account; users
-should not pay again. Simply opening the success URL or sending `isPremium: true`
-does not activate an account.
+## Deployment and submission — finish these items
 
-Billing tests (mocked Stripe and database writes):
-`node --test tests/billing.test.mjs tests/lesson-access.test.mjs tests/profile.test.mjs`
-from the server folder.
+- [ ] Replace the four `ADD_..._URL` placeholders at the top of this README.
+- [ ] Add screenshots to `docs/screenshots/` and uncomment their image lines.
+- [ ] Add the environment variables to the correct frontend/server deployment projects.
+- [ ] Set frontend `API_SERVER_URL` to the deployed Express origin and rebuild.
+- [ ] Set server `CLIENT_URL` and `BETTER_AUTH_URL` to the deployed frontend origin.
+- [ ] Configure the production Google callback URL, MongoDB access, and Stripe webhook endpoint.
+- [ ] Check `YOUR_LIVE_SERVER_URL/api/health` and verify frontend API requests.
+- [ ] Test private-route reloads, login, uploads, lesson CRUD, and admin authorization.
+- [ ] Test checkout, Premium activation, the Premium badge, and checkout cancellation.
+- [ ] Test subscription lifecycle updates through signed Stripe webhooks.
+- [ ] Check mobile, tablet, desktop, and both themes.
+- [ ] Confirm at least **20 meaningful client commits** and **12 meaningful server commits**.
 
+### Remaining application work
 
-### User dashboard
-
-`/dashboard` is the protected overview for regular users, showing total created
-lessons, distinct saved favorites, the five newest lessons (including their own
-private lessons), a 30-day daily contribution chart, and quick action links. The
-chart uses UTC and includes days with zero activity. Profile photo, role, and
-Premium membership appear in the welcome section. New accounts see an empty
-state with a link to write their first lesson.
-
-`GET /api/dashboard` derives ownership exclusively from the Better Auth session;
-request parameters cannot select another user's data. Login defaults to this
-page for regular users and `/dashboard/admin` for admins, while preserving
-explicit return destinations such as lesson details and payment confirmation.
-The account menu and dashboard navigation link to the overview.
-
-Verify in the server project: `node --test tests/dashboard.test.mjs`.
+- Add footer contact information, Terms & Conditions, and actual social-profile URLs.
+- Protect the pricing page itself if following the assignment’s private-route rule; currently checkout requires login, but the comparison page is public.
+- Optional account deletion and moderation activity summaries are not implemented.
