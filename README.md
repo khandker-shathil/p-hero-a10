@@ -136,7 +136,7 @@ an active/trialing subscription, then updates the MongoDB `user` document:
 and `updatedAt`. The browser refreshes its Better Auth session after activation.
 Existing Premium lesson access, creation, and badges use `isPremium`.
 
-Configure `STRIPE_SECRET_KEY` in both projects' deployment environments. Optional
+Configure `BILLING_SECRET_KEY` in both projects' deployment environments. Optional
 `STRIPE_PRICE_ID` must be the same recurring Price in both projects; otherwise the
 existing configured Price ID is used. The local secret was copied to the Express
 `.env` without removing it from the Next.js environment.
