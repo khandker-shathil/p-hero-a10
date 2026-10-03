@@ -1,3 +1,4 @@
+import { ActivatePremium } from "@/components/pricing/activate-premium"
 import Link from "next/link"
 import {
   ArrowRight,
@@ -140,11 +141,7 @@ export default async function CheckoutSuccessPage({ searchParams }) {
               </li>
             ))}
           </ul>
-          {success && (
-            <p className="mt-6 text-xs leading-5 text-muted-foreground">
-              Your profile shows your account’s current membership status.
-            </p>
-          )}
+          {success && <ActivatePremium sessionId={id} />}
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             {success ? (
               <>

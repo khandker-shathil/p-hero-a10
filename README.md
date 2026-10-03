@@ -5,10 +5,11 @@ Live URL: not deployed yet.
 
 ## Architecture
 
-This repository is now **frontend-only**. The standalone Express backend lives
-in `../p-hero-a10-server` and owns Better Auth, MongoDB, and every `/api` endpoint.
-Next.js rewrites `/api/*` to that server; there are no database queries or auth
-server handlers in this repository. The proxy keeps browser cookies same-origin.
+The standalone Express backend lives in `../p-hero-a10-server` and owns Better
+Auth, MongoDB, and the business APIs. Next.js forwards `/api/*` to Express, except
+for the local `/api/checkout_sessions` route that creates Stripe Checkout sessions.
+The success page verifies checkout on the server; Express owns Premium activation
+and Stripe webhooks. The proxy keeps browser cookies same-origin.
 
 ## Start locally
 
@@ -40,11 +41,11 @@ only in the backend `.env`. Restart Next.js after changing the proxy URL.
   engagement counts, and confirmed deletion.
 
 - Pricing page at `/pricing`: Free/Premium comparison, account-aware upgrade
-  summary, and FAQs. Pricing is pending and checkout is disabled; no payment
-  details are collected and no membership changes are made. Stripe checkout and
-  verified webhook fulfillment still need backend implementation.
+  summary, and FAQs. Authenticated Stripe subscription checkout activates Premium
+  through server-verified payment and account ownership checks. Configure Stripe
+  webhooks in deployment to synchronize subscription lifecycle changes.
 
-Personal dashboard analytics, Stripe payment integration, and final
+Personal dashboard analytics and final
 contact/terms/social configuration remain separate implementation work.
 
 ## Verify
@@ -122,3 +123,44 @@ summaries are not implemented.
 `/api/admin/*` checks both the session and the current MongoDB role on every
 request. Redeploy/restart the frontend and Express server together. Server tests:
 `node --test tests/admin.test.mjs tests/profile.test.mjs`.
+
+
+### Stripe Premium activation
+
+Checkout requires login and attaches the authenticated user ID to the Stripe
+Checkout Session and subscription metadata. The success page posts the checkout
+ID to `/api/billing/activate`. Express retrieves the session and subscription from
+Stripe, verifies ownership, the configured Premium Price, completed payment, and
+an active/trialing subscription, then updates the MongoDB `user` document:
+`isPremium`, `stripeCustomerId`, `stripeSubscriptionId`, `stripeSubscriptionStatus`,
+and `updatedAt`. The browser refreshes its Better Auth session after activation.
+Existing Premium lesson access, creation, and badges use `isPremium`.
+
+Configure `STRIPE_SECRET_KEY` in both projects' deployment environments. Optional
+`STRIPE_PRICE_ID` must be the same recurring Price in both projects; otherwise the
+existing configured Price ID is used. The local secret was copied to the Express
+`.env` without removing it from the Next.js environment.
+
+In Stripe, add a webhook endpoint at
+`https://YOUR-EXPRESS-SERVER/api/stripe/webhook` and subscribe to:
+
+- `checkout.session.completed`
+- `checkout.session.async_payment_succeeded`
+- `customer.subscription.updated`
+- `customer.subscription.deleted`
+
+Set that endpoint's signing secret as `STRIPE_WEBHOOK_SECRET` on Express, then
+restart/redeploy both projects. Webhooks verify the signature against the raw
+request body before touching MongoDB. Checkout events activate access even when
+the browser never returns; subscription events refresh access from Stripe's
+current status. Cancellation at period end keeps access while the subscription
+is still active. Canceled, unpaid, past-due, and paused statuses revoke access.
+
+Checkouts created before user metadata was added cannot be automatically matched.
+An administrator must match the existing verified payment to its account; users
+should not pay again. Simply opening the success URL or sending `isPremium: true`
+does not activate an account.
+
+Billing tests (mocked Stripe and database writes):
+`node --test tests/billing.test.mjs tests/lesson-access.test.mjs tests/profile.test.mjs`
+from the server folder.
