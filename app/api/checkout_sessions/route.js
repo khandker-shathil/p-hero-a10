@@ -45,7 +45,7 @@ export async function POST(request) {
       subscription_data: { metadata: { userId } },
       customer_email: account.user.email,
       success_url: `${origin}/pricing/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/pricing`,
+      cancel_url: `${origin}/payment/cancel`,
     })
     return NextResponse.redirect(session.url, 303)
   } catch {
