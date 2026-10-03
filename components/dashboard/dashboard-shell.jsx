@@ -3,7 +3,14 @@
 import { useEffect } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { LoaderCircle, Plus, BookOpen, Bookmark, UserRound } from "lucide-react"
+import {
+  LoaderCircle,
+  Plus,
+  BookOpen,
+  Bookmark,
+  UserRound,
+  LayoutDashboard,
+} from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 import { buttonVariants } from "@/components/ui/button"
 
@@ -46,6 +53,16 @@ export function DashboardShell({ children }) {
         aria-label="Lesson management"
         className="mb-8 flex flex-wrap gap-3 border-b pb-6"
       >
+        <Link
+          href="/dashboard"
+          aria-current={pathname === "/dashboard" ? "page" : undefined}
+          className={buttonVariants({
+            variant: pathname === "/dashboard" ? "default" : "outline",
+          })}
+        >
+          <LayoutDashboard aria-hidden="true" />
+          Overview
+        </Link>
         <Link
           href="/dashboard/my-lessons"
           aria-current={

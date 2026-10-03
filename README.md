@@ -45,8 +45,7 @@ only in the backend `.env`. Restart Next.js after changing the proxy URL.
   through server-verified payment and account ownership checks. Configure Stripe
   webhooks in deployment to synchronize subscription lifecycle changes.
 
-Personal dashboard analytics and final
-contact/terms/social configuration remain separate implementation work.
+Final contact/terms/social configuration remains separate implementation work.
 
 ## Verify
 
@@ -164,3 +163,21 @@ does not activate an account.
 Billing tests (mocked Stripe and database writes):
 `node --test tests/billing.test.mjs tests/lesson-access.test.mjs tests/profile.test.mjs`
 from the server folder.
+
+
+### User dashboard
+
+`/dashboard` is the protected overview for regular users, showing total created
+lessons, distinct saved favorites, the five newest lessons (including their own
+private lessons), a 30-day daily contribution chart, and quick action links. The
+chart uses UTC and includes days with zero activity. Profile photo, role, and
+Premium membership appear in the welcome section. New accounts see an empty
+state with a link to write their first lesson.
+
+`GET /api/dashboard` derives ownership exclusively from the Better Auth session;
+request parameters cannot select another user's data. Login defaults to this
+page for regular users and `/dashboard/admin` for admins, while preserving
+explicit return destinations such as lesson details and payment confirmation.
+The account menu and dashboard navigation link to the overview.
+
+Verify in the server project: `node --test tests/dashboard.test.mjs`.

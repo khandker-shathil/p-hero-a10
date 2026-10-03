@@ -60,7 +60,7 @@ export function AdminShell({ children }) {
           Administration
         </p>
         <Link
-          href="/dashboard/my-lessons"
+          href="/dashboard"
           className="text-sm underline underline-offset-4"
         >
           My workspace

@@ -26,7 +26,7 @@ const links = [
   { label: "Home", href: "/" },
   { label: "Public Lessons", href: "/public-lessons" },
   { label: "Add Lesson", href: "/dashboard/add-lesson" },
-  { label: "My Lessons", href: "/dashboard/my-lessons" },
+  { label: "My Lessons", href: "/dashboard" },
 ]
 
 const focusStyle =
@@ -237,9 +237,7 @@ function NavbarContent({ pathname }) {
                 </Link>
                 <Link
                   href={
-                    user.role === "admin"
-                      ? "/dashboard/admin"
-                      : "/dashboard/my-lessons"
+                    user.role === "admin" ? "/dashboard/admin" : "/dashboard"
                   }
                   className={cn(
                     "flex items-center gap-2 rounded-lg px-3 py-2.5 text-sm hover:bg-accent",

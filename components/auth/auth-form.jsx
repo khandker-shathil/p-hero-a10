@@ -13,6 +13,7 @@ import {
 } from "lucide-react"
 import { ImagePicker } from "@/components/image-picker"
 import { uploadImage } from "@/lib/image-upload"
+import { loginDestination } from "@/lib/auth-redirect"
 import { authClient } from "@/lib/auth-client"
 import { passwordError } from "@/lib/auth-validation"
 import { Button } from "@/components/ui/button"
@@ -31,11 +32,7 @@ export function AuthForm({ register = false, returnTo = "/" }) {
 
   useEffect(() => {
     if (session?.user && !busy)
-      router.replace(
-        returnTo === "/" && session.user.role === "admin"
-          ? "/dashboard/admin"
-          : returnTo
-      )
+      router.replace(loginDestination(returnTo, session.user.role))
   }, [session?.user, router, returnTo, busy])
 
   useEffect(() => {
@@ -111,11 +108,7 @@ export function AuthForm({ register = false, returnTo = "/" }) {
           ? "Your account is ready. Welcome to Digital Life Lessons!"
           : "You’re logged in. Welcome back!"
       )
-      router.replace(
-        returnTo === "/" && refreshed.data.user.role === "admin"
-          ? "/dashboard/admin"
-          : returnTo
-      )
+      router.replace(loginDestination(returnTo, refreshed.data.user.role))
     } catch {
       notify("Could not connect. Please try again in a moment.", "error")
     } finally {

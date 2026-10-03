@@ -1,6 +1,6 @@
 import test from "node:test"
 import assert from "node:assert/strict"
-import { safeReturnTo } from "../lib/auth-redirect.js"
+import { safeReturnTo, loginDestination } from "../lib/auth-redirect.js"
 import {
   parseLessonFilters,
   lessonSearchParams,
@@ -40,4 +40,15 @@ test("invalid filters and page values fall back safely", () => {
     ),
     { q: "", category: "", tone: "", page: 1, sort: "newest" }
   )
+})
+
+test("login defaults to the right dashboard and preserves explicit destinations", () => {
+  assert.equal(loginDestination("/", "user"), "/dashboard")
+  assert.equal(loginDestination("/", "admin"), "/dashboard/admin")
+  assert.equal(loginDestination("/lessons/123", "user"), "/lessons/123")
+  assert.equal(
+    loginDestination("/pricing/success?session_id=cs_test_abc", "user"),
+    "/pricing/success?session_id=cs_test_abc"
+  )
+  assert.equal(loginDestination("https://evil.example", "user"), "/dashboard")
 })
