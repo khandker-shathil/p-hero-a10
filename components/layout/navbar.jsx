@@ -331,6 +331,12 @@ function NavbarContent({ pathname }) {
         className="border-t px-4 py-4 lg:hidden"
       >
         <div className="flex flex-col gap-1">{links.map(navigationLink)}</div>
+        {user?.isPremium && (
+          <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1.5 text-xs font-semibold text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+            <Crown className="size-3.5" aria-hidden="true" />
+            Premium member
+          </span>
+        )}
         {!isPending && !user && (
           <div className="mt-4 grid grid-cols-2 gap-3 border-t pt-4">
             <Link
