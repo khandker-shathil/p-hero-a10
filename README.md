@@ -29,7 +29,9 @@ A full-stack platform for preserving personal wisdom, sharing meaningful experie
 ![User dashboard](docs/screenshots/user-dashboard.png)
 ![Free and Premium comparison](docs/screenshots/pricing.png)
 ![Admin dashboard analytics](docs/screenshots/admin-dashboard.png)
-<!-- ![Mobile layout](docs/screenshots/mobile.png) -->
+![Mobile layout (Public Lessons)](docs/screenshots/mobile1.png)
+![Mobile layout (Detailed Lessons)](docs/screenshots/mobile2.png)
+![Mobile layout (Admin Page)](docs/screenshots/mobile3.png)
 
 ## Key features
 
@@ -211,19 +213,3 @@ npm test
 ```
 
 Some MongoDB aggregation tests are opt-in. The default tests mock payment/database writes; they do not replace a real browser checkout test.
-
-## Deployment and submission — finish these items
-
-- [ ] Replace the four `ADD_..._URL` placeholders at the top of this README.
-- [ ] Add screenshots to `docs/screenshots/` and uncomment their image lines.
-- [ ] Add the environment variables to the correct frontend/server deployment projects.
-- [ ] Set frontend `API_SERVER_URL` to the deployed Express origin and rebuild.
-- [ ] Set server `CLIENT_URL` and `BETTER_AUTH_URL` to the deployed frontend origin.
-- [ ] Configure the production Google callback URL, MongoDB access, and Stripe webhook endpoint.
-- [ ] Check `YOUR_LIVE_SERVER_URL/api/health` and verify frontend API requests.
-- [ ] Test private-route reloads, login, uploads, lesson CRUD, and admin authorization.
-- [ ] Test checkout, Premium activation, the Premium badge, and checkout cancellation.
-- [ ] Test subscription lifecycle updates through signed Stripe webhooks.
-- [ ] Check mobile, tablet, desktop, and both themes.
-- [ ] Confirm at least **20 meaningful client commits** and **12 meaningful server commits**.
-
