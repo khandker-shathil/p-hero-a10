@@ -18,6 +18,21 @@ const premiumFeatures = [
   "Premium badge on your profile",
 ]
 
+const comparison = [
+  [
+    "Lessons you can create",
+    "Unlimited free lessons",
+    "Unlimited free or premium lessons",
+  ],
+  ["Public and private visibility", true, true],
+  ["Read free public lessons", true, true],
+  ["Read other authors’ premium public lessons", false, true],
+  ["Create premium lessons", false, true],
+  ["Favorites, likes, and comments", true, true],
+  ["Export accessible lessons as PDF", true, true],
+  ["Premium profile badge", false, true],
+]
+
 export function Pricing() {
   const { data: session, isPending } = authClient.useSession()
   const premium = !!session?.user?.isPremium
@@ -132,6 +147,76 @@ export function Pricing() {
           </p>
         </article>
       </div>
+
+      <section
+        aria-labelledby="comparison-heading"
+        className="mx-auto mt-12 max-w-4xl"
+      >
+        <h2
+          id="comparison-heading"
+          className="text-2xl font-semibold tracking-tight"
+        >
+          Find the plan that fits your journey
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">
+          Keep reflecting for free, or unlock more perspectives with Premium.
+        </p>
+        <div className="mt-6 overflow-hidden rounded-2xl border bg-card">
+          <table className="w-full table-fixed text-left text-xs sm:text-sm">
+            <caption className="sr-only">
+              Free and Premium plan feature comparison
+            </caption>
+            <thead>
+              <tr className="border-b">
+                <th scope="col" className="w-2/5 p-3 font-semibold sm:p-5">
+                  Features
+                </th>
+                <th
+                  scope="col"
+                  className="p-3 text-center font-semibold sm:p-5"
+                >
+                  Free
+                  <span className="mt-1 block text-xs font-normal text-muted-foreground">
+                    $0
+                  </span>
+                </th>
+                <th
+                  scope="col"
+                  className="bg-amber-50/70 p-3 text-center font-semibold sm:p-5 dark:bg-amber-950/20"
+                >
+                  <span className="inline-flex items-center gap-1">
+                    <Crown className="size-4" aria-hidden="true" />
+                    Premium
+                  </span>
+                  <span className="mt-1 block text-xs font-normal text-muted-foreground">
+                    $5.99 USD subscription
+                  </span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {comparison.map(([feature, free, paid]) => (
+                <tr key={feature}>
+                  <th scope="row" className="p-3 font-medium sm:p-5">
+                    {feature}
+                  </th>
+                  <td className="p-3 text-center sm:p-5">
+                    <ComparisonValue value={free} />
+                  </td>
+                  <td className="bg-amber-50/70 p-3 text-center sm:p-5 dark:bg-amber-950/20">
+                    <ComparisonValue value={paid} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+          Private lessons stay private on both plans. Premium access applies to
+          lessons shared publicly. Review your subscription’s billing schedule
+          on Stripe before paying.
+        </p>
+      </section>
 
       {!premium && (
         <section
@@ -248,4 +333,17 @@ function Features({ items }) {
       ))}
     </ul>
   )
+}
+
+function ComparisonValue({ value }) {
+  if (value === true)
+    return (
+      <span className="inline-flex flex-col items-center gap-1 text-emerald-700 dark:text-emerald-300">
+        <Check className="size-4" aria-hidden="true" />
+        <span className="text-xs">Included</span>
+      </span>
+    )
+  if (value === false)
+    return <span className="text-xs text-muted-foreground">Not included</span>
+  return <span className="leading-5">{value}</span>
 }
