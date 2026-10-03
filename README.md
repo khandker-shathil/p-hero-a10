@@ -4,8 +4,6 @@ A full-stack platform for preserving personal wisdom, sharing meaningful experie
 
 ## Project links
 
-Replace the placeholders below before submission.
-
 | Link | URL |
 | --- | --- |
 | Live website | https://p-hero-a10.vercel.app/ |
@@ -15,12 +13,19 @@ Replace the placeholders below before submission.
 
 ## Screenshots
 
-Save screenshots in [`docs/screenshots/`](docs/screenshots/). Use the filenames below, then uncomment the matching Markdown image lines in this README. Instructions are in [the screenshot guide](docs/screenshots/README.md).
+| Screenshot | Filename | What to capture |
+| --- | --- | --- |
+| Homepage | `home.png` | Hero, featured lessons, and community sections |
+| Public lessons | `public-lessons.png` | Cards, filters, search, and pagination |
+| Lesson details | `lessons-details.png` | Lesson content, interactions, sharing, and PDF export |
+| User dashboard | `user-dashboard.png` | Counts, recent lessons, and contribution chart |
+| Pricing | `pricing.png` | Plan cards and the feature comparison table |
+| Admin dashboard | `admin-dashboard.png` | Platform statistics and growth charts |
+| Mobile layout | `mobile.png` | Navigation and a representative mobile page |
 
-<!-- Add each image file before uncommenting its line. -->
 ![Digital Life Lessons homepage](docs/screenshots/home.png)
 ![Public lesson browsing and filters](docs/screenshots/public-lessons.png)
-![Lesson details and sharing](docs/screenshots/lesson-details.png)
+![Lesson details and sharing](docs/screenshots/lessons-details.png)
 ![User dashboard](docs/screenshots/user-dashboard.png)
 ![Free and Premium comparison](docs/screenshots/pricing.png)
 ![Admin dashboard analytics](docs/screenshots/admin-dashboard.png)
@@ -222,8 +227,3 @@ Some MongoDB aggregation tests are opt-in. The default tests mock payment/databa
 - [ ] Check mobile, tablet, desktop, and both themes.
 - [ ] Confirm at least **20 meaningful client commits** and **12 meaningful server commits**.
 
-### Remaining application work
-
-- Add footer contact information, Terms & Conditions, and actual social-profile URLs.
-- Protect the pricing page itself if following the assignment’s private-route rule; currently checkout requires login, but the comparison page is public.
-- Optional account deletion and moderation activity summaries are not implemented.
